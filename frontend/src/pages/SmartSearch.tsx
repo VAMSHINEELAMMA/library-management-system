@@ -42,7 +42,7 @@ const SmartSearch: React.FC = () => {
     setError("");
     try {
       const res = await axios.get(
-        "https://library-management-system-ih9d.onrender.com/api/ml/smart-search?q=" + query,
+        "https://library-management-system-ih9d.onrender.com/api/ml/smart-search?query=" + query,
         { headers: { Authorization: "Bearer " + token } }
       );
       setData(res.data);
