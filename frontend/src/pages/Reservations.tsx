@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+﻿import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import {
@@ -33,7 +33,7 @@ const Reservations: React.FC = () => {
   const fetchReservations = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:5000/api/reservations/my/${user.id}`,
+        `https://library-management-system-ih9d.onrender.com/api/reservations/my/${user.id}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setReservations(res.data);
@@ -46,7 +46,7 @@ const Reservations: React.FC = () => {
     if (!selectedBookId) return;
     try {
       const res = await axios.post(
-        'http://localhost:5000/api/reservations',
+        'https://library-management-system-ih9d.onrender.com/api/reservations',
         { memberId: user.id, bookId: selectedBookId },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -62,7 +62,7 @@ const Reservations: React.FC = () => {
   const handleCancel = async (reservationId: string) => {
     try {
       const res = await axios.put(
-        `http://localhost:5000/api/reservations/cancel/${reservationId}`,
+        `https://library-management-system-ih9d.onrender.com/api/reservations/cancel/${reservationId}`,
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -77,7 +77,7 @@ const Reservations: React.FC = () => {
     <>
       <AppBar position="static">
         <Toolbar>
-          <Typography variant="h6" sx={{ flexGrow: 1 }}>📋 My Reservations</Typography>
+          <Typography variant="h6" sx={{ flexGrow: 1 }}>ðŸ“‹ My Reservations</Typography>
           <Button color="inherit" onClick={() => navigate('/dashboard')}>Dashboard</Button>
         </Toolbar>
       </AppBar>
@@ -89,7 +89,7 @@ const Reservations: React.FC = () => {
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
           <Typography variant="h5">My Reservations ({reservations.length})</Typography>
           <Button variant="contained" onClick={() => setOpenDialog(true)}>
-            ➕ Reserve a Book
+            âž• Reserve a Book
           </Button>
         </Box>
 

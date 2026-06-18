@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+﻿import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import {
@@ -41,7 +41,7 @@ const ReadingAnalytics: React.FC = () => {
   const fetchAnalytics = async () => {
     try {
       const res = await axios.get(
-        "http://localhost:5000/api/ml/reading-analytics/" + user.id,
+        "https://library-management-system-ih9d.onrender.com/api/ml/reading-analytics/" + user.id,
         { headers: { Authorization: "Bearer " + token } }
       );
       setData(res.data);

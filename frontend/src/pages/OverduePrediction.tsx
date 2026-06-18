@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+﻿import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import {
@@ -40,7 +40,7 @@ const OverduePrediction: React.FC = () => {
   const fetchPrediction = async () => {
     try {
       const res = await axios.get(
-        "http://localhost:5000/api/ml/overdue-prediction/" + user.id,
+        "https://library-management-system-ih9d.onrender.com/api/ml/overdue-prediction/" + user.id,
         { headers: { Authorization: "Bearer " + token } }
       );
       setData(res.data);
@@ -87,9 +87,9 @@ const OverduePrediction: React.FC = () => {
                 background: "linear-gradient(135deg, #3E2723, #5D4037)",
                 p: 3, color: "white"
               }}>
-                <Typography variant="h5">🤖 ML Risk Assessment</Typography>
+                <Typography variant="h5">ðŸ¤– ML Risk Assessment</Typography>
                 <Typography variant="body2" sx={{ opacity: 0.8 }}>
-                  {data.algorithm} • {data.mlConcept}
+                  {data.algorithm} â€¢ {data.mlConcept}
                 </Typography>
               </Box>
               <CardContent>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+﻿import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import {
@@ -42,7 +42,7 @@ const SmartSearch: React.FC = () => {
     setError("");
     try {
       const res = await axios.get(
-        "http://localhost:5000/api/ml/smart-search?q=" + query,
+        "https://library-management-system-ih9d.onrender.com/api/ml/smart-search?q=" + query,
         { headers: { Authorization: "Bearer " + token } }
       );
       setData(res.data);
@@ -55,7 +55,7 @@ const SmartSearch: React.FC = () => {
   const handleBorrow = async (bookId: string) => {
     try {
       await axios.post(
-        "http://localhost:5000/api/borrows/borrow",
+        "https://library-management-system-ih9d.onrender.com/api/borrows/borrow",
         { memberId: user.id, bookId },
         { headers: { Authorization: "Bearer " + token } }
       );
@@ -94,7 +94,7 @@ const SmartSearch: React.FC = () => {
           borderRadius: 3, color: "white"
         }}>
           <Typography variant="h5" gutterBottom>
-            🧠 AI-Powered Smart Search
+            ðŸ§  AI-Powered Smart Search
           </Typography>
           <Typography variant="body1" sx={{ mb: 2 }}>
             Uses TF-IDF algorithm to find the most relevant books
@@ -154,7 +154,7 @@ const SmartSearch: React.FC = () => {
                         display: "flex", alignItems: "center",
                         justifyContent: "center"
                       }}>
-                        <Typography variant="h2">📚</Typography>
+                        <Typography variant="h2">ðŸ“š</Typography>
                       </Box>
                     )}
                     <CardContent>

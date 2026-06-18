@@ -47,7 +47,7 @@ const EBooks: React.FC = () => {
 
   const fetchEBooks = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/ebooks",
+      const res = await axios.get("https://library-management-system-ih9d.onrender.com/api/ebooks",
         { headers: { Authorization: "Bearer " + token } }
       );
       setEbooks(res.data);
@@ -70,7 +70,7 @@ const EBooks: React.FC = () => {
   const handleDownload = async (ebook: EBook) => {
     try {
       await axios.put(
-        "http://localhost:5000/api/ebooks/download/" + ebook._id,
+        "https://library-management-system-ih9d.onrender.com/api/ebooks/download/" + ebook._id,
         {},
         { headers: { Authorization: "Bearer " + token } }
       );
@@ -86,7 +86,7 @@ const EBooks: React.FC = () => {
     if (!window.confirm("Delete this ebook?")) return;
     try {
       await axios.delete(
-        "http://localhost:5000/api/ebooks/" + id,
+        "https://library-management-system-ih9d.onrender.com/api/ebooks/" + id,
         { headers: { Authorization: "Bearer " + token } }
       );
       setMessage("EBook deleted!");
@@ -110,7 +110,7 @@ const EBooks: React.FC = () => {
       data.append("description", formData.description);
       data.append("ebook", file);
 
-      await axios.post("http://localhost:5000/api/ebooks", data, {
+      await axios.post("https://library-management-system-ih9d.onrender.com/api/ebooks", data, {
         headers: {
           Authorization: "Bearer " + token,
           "Content-Type": "multipart/form-data"
@@ -287,3 +287,4 @@ const EBooks: React.FC = () => {
 };
 
 export default EBooks;
+

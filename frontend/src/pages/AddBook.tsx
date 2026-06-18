@@ -60,7 +60,7 @@ const AddBook: React.FC = () => {
         data.append("coverImage", coverImage);
       }
 
-      await axios.post("http://localhost:5000/api/books", data, {
+      await axios.post("https://library-management-system-ih9d.onrender.com/api/books", data, {
         headers: {
           Authorization: "Bearer " + localStorage.getItem("token"),
           "Content-Type": "multipart/form-data"
@@ -136,7 +136,7 @@ const AddBook: React.FC = () => {
                 setLoading(true);
 
                 const res = await axios.post(
-                  "http://localhost:5000/api/ml/generate-summary",
+                  "https://library-management-system-ih9d.onrender.com/api/ml/generate-summary",
                   {
                     title: formData.title,
                     author: formData.author,
@@ -205,3 +205,4 @@ const AddBook: React.FC = () => {
 };
 
 export default AddBook;
+

@@ -46,7 +46,7 @@ const Reports: React.FC = () => {
   const fetchReports = async () => {
     try {
       const res = await axios.get(
-        "http://localhost:5000/api/reports/summary",
+        "https://library-management-system-ih9d.onrender.com/api/reports/summary",
         { headers: { Authorization: "Bearer " + token } }
       );
       setData(res.data);
@@ -304,3 +304,4 @@ const Reports: React.FC = () => {
 };
 
 export default Reports;
+

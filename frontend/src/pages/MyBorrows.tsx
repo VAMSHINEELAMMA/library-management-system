@@ -38,7 +38,7 @@ const MyBorrows: React.FC = () => {
   const fetchMyBorrows = async () => {
     try {
       const res = await axios.get(
-        "http://localhost:5000/api/borrows/my/" + user.id,
+        "https://library-management-system-ih9d.onrender.com/api/borrows/my/" + user.id,
         { headers: { Authorization: "Bearer " + localStorage.getItem("token") } }
       );
       setBorrows(res.data);
@@ -50,7 +50,7 @@ const MyBorrows: React.FC = () => {
   const fetchAllBorrows = async () => {
     try {
       const res = await axios.get(
-        "http://localhost:5000/api/borrows/all",
+        "https://library-management-system-ih9d.onrender.com/api/borrows/all",
         { headers: { Authorization: "Bearer " + localStorage.getItem("token") } }
       );
       setBorrows(res.data);
@@ -62,7 +62,7 @@ const MyBorrows: React.FC = () => {
   const handleReturn = async (borrowId: string) => {
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/borrows/return",
+        "https://library-management-system-ih9d.onrender.com/api/borrows/return",
         { borrowId },
         { headers: { Authorization: "Bearer " + localStorage.getItem("token") } }
       );
@@ -172,3 +172,4 @@ const MyBorrows: React.FC = () => {
 };
 
 export default MyBorrows;
+

@@ -34,7 +34,7 @@ const EditBook: React.FC = () => {
   const fetchBook = async () => {
     try {
       const res = await axios.get(
-        "http://localhost:5000/api/books/" + id,
+        "https://library-management-system-ih9d.onrender.com/api/books/" + id,
         { headers: { Authorization: "Bearer " + token } }
       );
       const book = res.data;
@@ -91,7 +91,7 @@ const EditBook: React.FC = () => {
       }
 
       await axios.put(
-        "http://localhost:5000/api/books/" + id,
+        "https://library-management-system-ih9d.onrender.com/api/books/" + id,
         data,
         {
           headers: {
@@ -218,3 +218,4 @@ const EditBook: React.FC = () => {
 };
 
 export default EditBook;
+

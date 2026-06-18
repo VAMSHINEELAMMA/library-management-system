@@ -60,7 +60,7 @@ const Fines: React.FC = () => {
   const fetchMyFines = async () => {
     try {
       const res = await axios.get(
-        "http://localhost:5000/api/fines/my/" + user.id,
+        "https://library-management-system-ih9d.onrender.com/api/fines/my/" + user.id,
         { headers: { Authorization: "Bearer " + token } }
       );
       setFines(res.data);
@@ -72,7 +72,7 @@ const Fines: React.FC = () => {
   const fetchAllFines = async () => {
     try {
       const res = await axios.get(
-        "http://localhost:5000/api/fines/all",
+        "https://library-management-system-ih9d.onrender.com/api/fines/all",
         { headers: { Authorization: "Bearer " + token } }
       );
       setFines(res.data);
@@ -85,7 +85,7 @@ const Fines: React.FC = () => {
     try {
       console.log("Fetching members...");
       const res = await axios.get(
-        "http://localhost:5000/api/members",
+        "https://library-management-system-ih9d.onrender.com/api/members",
         { headers: { Authorization: "Bearer " + token } }
       );
       console.log("Members loaded:", res.data.length);
@@ -99,7 +99,7 @@ const Fines: React.FC = () => {
   const handlePayFine = async (fineId: string) => {
     try {
       const res = await axios.put(
-        "http://localhost:5000/api/fines/pay/" + fineId,
+        "https://library-management-system-ih9d.onrender.com/api/fines/pay/" + fineId,
         {},
         { headers: { Authorization: "Bearer " + token } }
       );
@@ -119,7 +119,7 @@ const Fines: React.FC = () => {
     const option = FINE_OPTIONS[selectedFineOption as number];
     try {
       await axios.post(
-        "http://localhost:5000/api/fines",
+        "https://library-management-system-ih9d.onrender.com/api/fines",
         {
           memberId: selectedMember,
           amount: option.amount,
@@ -287,3 +287,4 @@ const Fines: React.FC = () => {
 };
 
 export default Fines;
+

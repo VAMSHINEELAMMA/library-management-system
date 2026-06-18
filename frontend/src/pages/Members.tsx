@@ -40,7 +40,7 @@ const Members: React.FC = () => {
   const fetchMembers = async () => {
     try {
       const res = await axios.get(
-        "http://localhost:5000/api/members",
+        "https://library-management-system-ih9d.onrender.com/api/members",
         { headers: { Authorization: "Bearer " + localStorage.getItem("token") } }
       );
       setMembers(res.data);
@@ -53,7 +53,7 @@ const Members: React.FC = () => {
     if (!window.confirm("Delete this member?")) return;
     try {
       await axios.delete(
-        "http://localhost:5000/api/members/" + id,
+        "https://library-management-system-ih9d.onrender.com/api/members/" + id,
         { headers: { Authorization: "Bearer " + localStorage.getItem("token") } }
       );
       setMessage("Member deleted");
@@ -158,3 +158,4 @@ const Members: React.FC = () => {
 };
 
 export default Members;
+

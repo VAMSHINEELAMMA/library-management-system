@@ -46,7 +46,7 @@ const Dashboard: React.FC = () => {
 
   const fetchStats = async (currentUser: User) => {
     try {
-      const booksRes = await axios.get("http://localhost:5000/api/books");
+      const booksRes = await axios.get("https://library-management-system-ih9d.onrender.com/api/books");
       const totalBooks = booksRes.data.length;
       let myBorrowings = 0;
       let pendingFines = 0;
@@ -54,13 +54,13 @@ const Dashboard: React.FC = () => {
 
       if (currentUser.role === "member") {
         const borrowsRes = await axios.get(
-          "http://localhost:5000/api/borrows/my/" + currentUser.id,
+          "https://library-management-system-ih9d.onrender.com/api/borrows/my/" + currentUser.id,
           { headers: { Authorization: "Bearer " + localStorage.getItem("token") } }
         );
         myBorrowings = borrowsRes.data.filter((b: any) => b.status === "active").length;
 
         const finesRes = await axios.get(
-          "http://localhost:5000/api/fines/my/" + currentUser.id,
+          "https://library-management-system-ih9d.onrender.com/api/fines/my/" + currentUser.id,
           { headers: { Authorization: "Bearer " + localStorage.getItem("token") } }
         );
         pendingFines = finesRes.data
@@ -68,7 +68,7 @@ const Dashboard: React.FC = () => {
           .reduce((sum: number, f: any) => sum + f.amount, 0);
 
         const resRes = await axios.get(
-          "http://localhost:5000/api/reservations/my/" + currentUser.id,
+          "https://library-management-system-ih9d.onrender.com/api/reservations/my/" + currentUser.id,
           { headers: { Authorization: "Bearer " + localStorage.getItem("token") } }
         );
         activeReservations = resRes.data.filter((r: any) => r.status === "pending").length;
@@ -76,13 +76,13 @@ const Dashboard: React.FC = () => {
 
       if (currentUser.role === "librarian" || currentUser.role === "admin") {
         const borrowsRes = await axios.get(
-          "http://localhost:5000/api/borrows/all",
+          "https://library-management-system-ih9d.onrender.com/api/borrows/all",
           { headers: { Authorization: "Bearer " + localStorage.getItem("token") } }
         );
         myBorrowings = borrowsRes.data.filter((b: any) => b.status === "active").length;
 
         const finesRes = await axios.get(
-          "http://localhost:5000/api/fines/all",
+          "https://library-management-system-ih9d.onrender.com/api/fines/all",
           { headers: { Authorization: "Bearer " + localStorage.getItem("token") } }
         );
         pendingFines = finesRes.data
@@ -101,7 +101,7 @@ const Dashboard: React.FC = () => {
     if (userData) {
       const u = JSON.parse(userData);
       try {
-        await axios.post("http://localhost:5000/api/auth/logout", { userId: u.id });
+        await axios.post("https://library-management-system-ih9d.onrender.com/api/auth/logout", { userId: u.id });
       } catch (err) {
         console.log("Logout tracking failed");
       }
@@ -268,3 +268,4 @@ const Dashboard: React.FC = () => {
 };
 
 export default Dashboard;
+

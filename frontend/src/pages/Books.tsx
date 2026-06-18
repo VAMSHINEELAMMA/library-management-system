@@ -40,7 +40,7 @@ const Books: React.FC = () => {
 
   const fetchBooks = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/books",
+      const res = await axios.get("https://library-management-system-ih9d.onrender.com/api/books",
         { headers: { Authorization: "Bearer " + token } }
       );
       setBooks(res.data);
@@ -63,7 +63,7 @@ const Books: React.FC = () => {
   const handleBorrow = async (bookId: string) => {
     try {
       await axios.post(
-        "http://localhost:5000/api/borrows/borrow",
+        "https://library-management-system-ih9d.onrender.com/api/borrows/borrow",
         { memberId: user.id, bookId },
         { headers: { Authorization: "Bearer " + token } }
       );
@@ -79,7 +79,7 @@ const Books: React.FC = () => {
   const handleReserve = async (bookId: string) => {
     try {
       await axios.post(
-        "http://localhost:5000/api/reservations",
+        "https://library-management-system-ih9d.onrender.com/api/reservations",
         { memberId: user.id, bookId },
         { headers: { Authorization: "Bearer " + token } }
       );
@@ -95,7 +95,7 @@ const Books: React.FC = () => {
     if (!window.confirm("Delete this book?")) return;
     try {
       await axios.delete(
-        "http://localhost:5000/api/books/" + bookId,
+        "https://library-management-system-ih9d.onrender.com/api/books/" + bookId,
         { headers: { Authorization: "Bearer " + token } }
       );
       setMessage("Book deleted!");

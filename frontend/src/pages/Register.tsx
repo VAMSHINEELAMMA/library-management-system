@@ -41,7 +41,7 @@ const Register: React.FC = () => {
     setLoading(true);
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/auth/register",
+        "https://library-management-system-ih9d.onrender.com/api/auth/register",
         formData,
         { headers: { "Content-Type": "application/json" } }
       );
@@ -114,3 +114,4 @@ const Register: React.FC = () => {
 };
 
 export default Register;
+

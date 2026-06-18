@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+﻿import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import {
@@ -42,7 +42,7 @@ const FineWaiver: React.FC = () => {
   const fetchWaiver = async () => {
     try {
       const res = await axios.get(
-        "http://localhost:5000/api/ml/fine-waiver/" + user.id,
+        "https://library-management-system-ih9d.onrender.com/api/ml/fine-waiver/" + user.id,
         { headers: { Authorization: "Bearer " + token } }
       );
       setData(res.data);
@@ -90,9 +90,9 @@ const FineWaiver: React.FC = () => {
                 background: "linear-gradient(135deg, #3E2723, #5D4037)",
                 p: 3, color: "white"
               }}>
-                <Typography variant="h5">🤖 AI Fine Waiver Decision</Typography>
+                <Typography variant="h5">ðŸ¤– AI Fine Waiver Decision</Typography>
                 <Typography variant="body2" sx={{ opacity: 0.8 }}>
-                  {data.algorithm} • {data.mlConcept}
+                  {data.algorithm} â€¢ {data.mlConcept}
                 </Typography>
               </Box>
               <CardContent>
