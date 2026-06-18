@@ -26,7 +26,7 @@ const fineRoutes = require("./routes/fines");
 const memberRoutes = require("./routes/members");
 const reservationRoutes = require("./routes/reservations");
 const reportRoutes = require("./routes/reports");
-const mlRoutes = require("./routes/ml");
+// const mlRoutes = require("./routes/ml");
 const ebookRoutes = require("./routes/ebooks");
 
 app.use("/api/auth", authRoutes);
@@ -36,7 +36,7 @@ app.use("/api/fines", fineRoutes);
 app.use("/api/members", memberRoutes);
 app.use("/api/reservations", reservationRoutes);
 app.use("/api/reports", reportRoutes);
-app.use("/api/ml", mlRoutes);
+// app.use("/api/ml", mlRoutes);
 app.use("/api/ebooks", ebookRoutes);
 
 app.get("/api/health", (req, res) => {
