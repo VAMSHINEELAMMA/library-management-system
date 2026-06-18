@@ -47,7 +47,7 @@ app.get("/api/health", (req, res) => {
 app.use(express.static(path.join(__dirname, '../frontend/build')));
 
 // Serve React app for any non-API route
-app.get('/:path*', (req, res) => {
+app.use((req, res) => {
   const indexPath = path.join(__dirname, '../frontend/build/index.html');
   res.sendFile(indexPath, (err) => {
     if (err) {
