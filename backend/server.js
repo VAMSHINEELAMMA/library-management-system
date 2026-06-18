@@ -3,7 +3,6 @@ const cors = require("cors");
 require("dotenv").config();
 const mongoose = require("mongoose");
 const path = require("path");
-
 const app = express();
 
 app.use(cors());
@@ -30,7 +29,6 @@ const reportRoutes = require("./routes/reports");
 const mlRoutes = require("./routes/ml");
 const ebookRoutes = require("./routes/ebooks");
 
-
 app.use("/api/auth", authRoutes);
 app.use("/api/books", bookRoutes);
 app.use("/api/borrows", borrowRoutes);
@@ -45,8 +43,17 @@ app.get("/api/health", (req, res) => {
   res.json({ status: "OK", message: "Server is running" });
 });
 
-app.use((req, res) => {
-  res.status(404).json({ msg: "Route not found: " + req.method + " " + req.path });
+// Serve frontend static files
+app.use(express.static(path.join(__dirname, '../frontend/build')));
+
+// Serve React app for any non-API route
+app.get('*', (req, res) => {
+  const indexPath = path.join(__dirname, '../frontend/build/index.html');
+  res.sendFile(indexPath, (err) => {
+    if (err) {
+      res.status(404).json({ msg: "Route not found: " + req.method + " " + req.path });
+    }
+  });
 });
 
 const PORT = process.env.PORT || 5000;
