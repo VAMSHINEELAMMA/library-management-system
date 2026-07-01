@@ -67,18 +67,7 @@ const EBooks: React.FC = () => {
     setFiltered(f);
   };
 
- const handleDownload = (ebookId: string, fileName: string) => {
-  // Use correct endpoint with ID
-  const url = `${API_URL}/api/ebooks/download/${ebookId}`;
-  
-  // Create anchor and click
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = fileName;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-};
+ 
 
   const handleDelete = async (id: string) => {
     if (!window.confirm("Delete this ebook?")) return;
