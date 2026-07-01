@@ -1,30 +1,33 @@
 ﻿const express = require("express");
 const multer = require("multer");
+const fs = require("fs");
 const path = require("path");
 const Book = require("../models/Book");
+
 const router = express.Router();
 
-// Configure multer for image upload
+// Create uploads folder if doesn't exist
+const uploadsDir = path.join(__dirname, "../uploads");
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+}
+
+// Multer config
 const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "uploads/");
+  destination: (req, file, cb) => {
+    cb(null, uploadsDir);
   },
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + path.extname(file.originalname));
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + "-" + file.originalname);
   }
 });
 
-const fileFilter = (req, file, cb) => {
-  if (file.mimetype.startsWith("image/")) {
-    cb(null, true);
-  } else {
-    cb(new Error("Only images allowed!"), false);
-  }
-};
+const upload = multer({ 
+  storage,
+  limits: { fileSize: 5 * 1024 * 1024 } // 5MB max
+});
 
-const upload = multer({ storage, fileFilter });
-
-// Get all books
+// GET all books
 router.get("/", async (req, res) => {
   try {
     const books = await Book.find();
@@ -34,81 +37,84 @@ router.get("/", async (req, res) => {
   }
 });
 
-// Create book with image
+// ADD new book
 router.post("/", upload.single("coverImage"), async (req, res) => {
   try {
-    const { isbn, title, author, category, totalCopies, price, publishYear, description } = req.body;
+    const { title, author, isbn, category, totalCopies } = req.body;
 
-    let book = await Book.findOne({ isbn });
-    if (book) return res.status(400).json({ msg: "Book already exists" });
+    let coverImage = null;
 
-    const coverImage = req.file ? "http://localhost:5000/uploads/" + req.file.filename : "";
+    // Convert uploaded image to base64
+    if (req.file) {
+      const imageBuffer = fs.readFileSync(req.file.path);
+      const base64 = imageBuffer.toString("base64");
+      const mimeType = req.file.mimetype; // image/jpeg, image/png
+      coverImage = `data:${mimeType};base64,${base64}`;
 
-    book = new Book({
-      isbn,
+      // Delete temp file
+      fs.unlinkSync(req.file.path);
+    }
+
+    const book = new Book({
       title,
       author,
+      isbn,
       category,
-      totalCopies: Number(totalCopies),
-      availableCopies: Number(totalCopies),
-      price: Number(price) || 0,
-      publishYear: Number(publishYear) || 0,
-      description,
+      totalCopies,
+      availableCopies: totalCopies,
       coverImage
     });
 
     await book.save();
-    res.json(book);
+    res.json({ success: true, book });
   } catch (err) {
+    console.error("Error adding book:", err.message);
     res.status(500).json({ error: err.message });
   }
 });
 
-// Get single book
-router.get("/:id", async (req, res) => {
-  try {
-    const book = await Book.findById(req.params.id);
-    if (!book) return res.status(404).json({ msg: "Book not found" });
-    res.json(book);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// Update book
+// EDIT book
 router.put("/:id", upload.single("coverImage"), async (req, res) => {
   try {
-    const updateData = { ...req.body };
+    const { title, author, isbn, category, totalCopies } = req.body;
+
+    const updateData = {
+      title,
+      author,
+      isbn,
+      category,
+      totalCopies
+    };
+
+    // Update image only if new one uploaded
     if (req.file) {
-      updateData.coverImage = "http://localhost:5000/uploads/" + req.file.filename;
+      const imageBuffer = fs.readFileSync(req.file.path);
+      const base64 = imageBuffer.toString("base64");
+      const mimeType = req.file.mimetype;
+      updateData.coverImage = `data:${mimeType};base64,${base64}`;
+
+      // Delete temp file
+      fs.unlinkSync(req.file.path);
     }
-    const book = await Book.findByIdAndUpdate(req.params.id, updateData, { new: true });
-    res.json(book);
+
+    const book = await Book.findByIdAndUpdate(
+      req.params.id,
+      updateData,
+      { new: true }
+    );
+
+    res.json({ success: true, book });
   } catch (err) {
+    console.error("Error updating book:", err.message);
     res.status(500).json({ error: err.message });
   }
 });
 
-// Delete book
+// DELETE book
 router.delete("/:id", async (req, res) => {
   try {
     await Book.findByIdAndDelete(req.params.id);
-    res.json({ msg: "Book deleted" });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// Search books
-router.get("/search/:query", async (req, res) => {
-  try {
-    const books = await Book.find({
-      $or: [
-        { title: { $regex: req.params.query, $options: "i" } },
-        { author: { $regex: req.params.query, $options: "i" } }
-      ]
-    });
-    res.json(books);
+    res.json({ success: true, message: "Book deleted" });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
