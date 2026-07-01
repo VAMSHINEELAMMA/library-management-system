@@ -1,92 +1,105 @@
 ﻿const express = require("express");
 const multer = require("multer");
+const fs = require("fs");
 const path = require("path");
 const EBook = require("../models/EBook");
+
 const router = express.Router();
 
+// Use /tmp for Render, local uploads for dev
+const ebooksDir = process.env.NODE_ENV === "production" 
+  ? path.join("/tmp", "ebooks")
+  : path.join(__dirname, "../uploads/ebooks");
+
+if (!fs.existsSync(ebooksDir)) {
+  fs.mkdirSync(ebooksDir, { recursive: true });
+}
+
+console.log("EBooks dir:", ebooksDir);
+
+// Multer config
 const storage = multer.diskStorage({
-  destination: function(req, file, cb) {
-    cb(null, "uploads/ebooks/");
+  destination: (req, file, cb) => cb(null, ebooksDir),
+  filename: (req, file, cb) => cb(null, Date.now() + "-" + file.originalname)
+});
+
+const upload = multer({
+  storage,
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype === "application/pdf") {
+      cb(null, true);
+    } else {
+      cb(new Error("Only PDF files"));
+    }
   },
-  filename: function(req, file, cb) {
-    cb(null, Date.now() + "-" + file.originalname);
-  }
+  limits: { fileSize: 50 * 1024 * 1024 }
 });
 
-const fileFilter = (req, file, cb) => {
-  if (file.mimetype === "application/pdf") {
-    cb(null, true);
-  } else {
-    cb(new Error("Only PDF files allowed!"), false);
-  }
-};
-
-const upload = multer({ storage, fileFilter });
-
-// Upload ebook (librarian)
-router.post("/", upload.single("ebook"), async (req, res) => {
-  try {
-    console.log("Upload ebook request:", req.body);
-    if (!req.file) {
-      return res.status(400).json({ msg: "Please upload a PDF file" });
-    }
-
-    const { title, author, category, description } = req.body;
-    if (!title || !author) {
-      return res.status(400).json({ msg: "Title and author required" });
-    }
-
-    const fileUrl = "http://localhost:5000/uploads/ebooks/" + req.file.filename;
-    const fileSize = (req.file.size / 1024 / 1024).toFixed(2) + " MB";
-
-    const ebook = new EBook({
-      title,
-      author,
-      category: category || "",
-      description: description || "",
-      fileName: req.file.originalname,
-      fileUrl,
-      fileSize
-    });
-
-    await ebook.save();
-    console.log("EBook saved:", ebook.title);
-    res.status(201).json({ msg: "EBook uploaded successfully!", ebook });
-  } catch (err) {
-    console.error("Upload error:", err.message);
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// Get all ebooks
+// GET all ebooks
 router.get("/", async (req, res) => {
   try {
-    const ebooks = await EBook.find().sort({ createdAt: -1 });
+    const ebooks = await EBook.find();
     res.json(ebooks);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-// Download ebook (increment counter)
-router.put("/download/:id", async (req, res) => {
+// POST - Add new ebook
+router.post("/", upload.single("pdfFile"), async (req, res) => {
   try {
-    const ebook = await EBook.findByIdAndUpdate(
-      req.params.id,
-      { $inc: { downloads: 1 } },
-      { new: true }
-    );
-    res.json({ msg: "Download tracked", fileUrl: ebook.fileUrl });
+    const { title, author, category } = req.body;
+
+    if (!req.file) return res.status(400).json({ error: "PDF required" });
+    if (!title || !author) return res.status(400).json({ error: "Title and author required" });
+
+    const ebook = new EBook({
+      title,
+      author,
+      category: category || "General",
+      fileName: req.file.filename,
+      pdfPath: `/uploads/ebooks/${req.file.filename}`
+    });
+
+    await ebook.save();
+    res.json({ success: true, ebook });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-// Delete ebook (librarian)
+// GET - Download ebook by ID (CHANGED: was PUT, now GET)
+router.get("/download/:id", async (req, res) => {
+  try {
+    const ebook = await EBook.findById(req.params.id);
+    if (!ebook) return res.status(404).json({ error: "EBook not found" });
+
+    const filePath = path.join(ebooksDir, ebook.fileName);
+
+    if (!fs.existsSync(filePath)) {
+      return res.status(404).json({ error: "File not found" });
+    }
+
+    // Send file for download
+    res.download(filePath, ebook.fileName);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// DELETE - Delete ebook
 router.delete("/:id", async (req, res) => {
   try {
-    await EBook.findByIdAndDelete(req.params.id);
-    res.json({ msg: "EBook deleted" });
+    const ebook = await EBook.findByIdAndDelete(req.params.id);
+
+    if (ebook) {
+      const filePath = path.join(ebooksDir, ebook.fileName);
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
+      }
+    }
+
+    res.json({ success: true });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
