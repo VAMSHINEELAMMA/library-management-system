@@ -67,7 +67,20 @@ const EBooks: React.FC = () => {
     setFiltered(f);
   };
 
- 
+  const handleDownload = async (ebook: EBook) => {
+    try {
+      await axios.put(
+        "https://library-management-system-ih9d.onrender.com/api/ebooks/download/" + ebook._id,
+        {},
+        { headers: { Authorization: "Bearer " + token } }
+      );
+      window.open(ebook.fileUrl, "_blank");
+      fetchEBooks();
+    } catch (err) {
+      console.log("Download error");
+      window.open(ebook.fileUrl, "_blank");
+    }
+  };
 
   const handleDelete = async (id: string) => {
     if (!window.confirm("Delete this ebook?")) return;
